@@ -6,21 +6,23 @@ import {
   UpdateDateColumn
 } from "typeorm";
 
-@Entity({ name: "users" })
-export class User {
+import { Category } from "../category.enum";
+
+@Entity({ name: "restaurants" })
+export class Restaurant {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ name: "name", nullable: false })
+  @Column({ name: "name" })
   name: string;
 
-  @Column({ name: "email", nullable: false, unique: true })
-  email: string;
+  @Column({ name: "description", nullable: true })
+  description: string;
 
-  @Column({ name: "password", nullable: false })
-  password: string;
+  @Column({ name: "opening_hours" })
+  opening_hours: string; // Horários no formato "08:00-18:00"
 
-  @Column({ name: "address", nullable: true })
+  @Column({ name: "address" })
   address: string;
 
   @Column({ name: "cep", nullable: true })
@@ -29,8 +31,14 @@ export class User {
   @Column({ name: "uf", nullable: true })
   uf: string;
 
+  @Column({ name: "logo_url" })
+  logo_url: string;
+
   @Column({ name: "phone", nullable: true })
   phone: string;
+
+  @Column({ name: "category", type: "enum", enum: Category, nullable: true })
+  category: string; //ENUM
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: string;

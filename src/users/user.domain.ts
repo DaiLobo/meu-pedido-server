@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  Matches,
   MaxLength,
   MinLength
 } from "class-validator";
@@ -27,6 +28,10 @@ export class UserDomain {
   @IsString({ message: "Password should be a string" })
   @MinLength(6, { message: "Password should be at least 6 characters long" })
   @MaxLength(255, { message: "Password should not exceed 255 characters" })
+  @Matches(/(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[@$!%*?&])/, {
+    message:
+      "A senha deve conter letras maiúsculas, minúsculas, números e caracteres especiais."
+  })
   readonly password: string;
 
   @IsOptional()
@@ -37,8 +42,6 @@ export class UserDomain {
 
   @IsOptional()
   @IsString({ message: "CEP should be a string" })
-  @MinLength(8, { message: "CEP should be at least 8 characters long" })
-  @MaxLength(11, { message: "CEP should not exceed 11 characters" })
   readonly cep?: string;
 
   @IsOptional()

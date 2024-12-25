@@ -1,4 +1,5 @@
-export class UsersDto {
+export class CreateUsersDto {
+  // Define o formato dos dados que serão recebidos ou enviados pela aplicação
   readonly id?: string;
   readonly name: string;
   readonly email: string;

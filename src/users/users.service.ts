@@ -1,29 +1,98 @@
+import * as bcrypt from "bcrypt";
 import { Repository } from "typeorm";
 
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
+import { UpdateUserDto } from "./dto/update-users.dto.js";
 import { UserDomain } from "./user.domain.js";
-import { Users } from "./user.entity";
+import { User } from "./user.entity";
 
-@Injectable()
+@Injectable() // Provedor de dependências. Permite que seja injetada em outras partes do sistema como controladores.
 export class UsersService {
+  // Lógica de negócio da aplicação. Chamado pelos controladores. Integra com bd atraves do repositório.
   constructor(
-    @InjectRepository(Users)
-    private readonly usersRepository: Repository<Users>
+    @InjectRepository(User)
+    private userRepository: Repository<User> // Injeta o repositório
   ) {}
 
-  async findAllUsers(): Promise<Users[]> {
-    const users = await this.usersRepository.find();
+  private readonly saltRounds = 10;
 
-    if (users.length === 0)
-      throw new HttpException("Users not found", HttpStatus.NOT_FOUND);
+  async hashPassword(password: string): Promise<string> {
+    return await bcrypt.hash(password, this.saltRounds);
+  }
 
+  async comparePasswords(
+    plainPassword: string,
+    hashedPassword: string
+  ): Promise<boolean> {
+    return await bcrypt.compare(plainPassword, hashedPassword);
+  }
+
+  async createUser(userDto: UserDomain): Promise<UserDomain> {
+    const existingUser = await this.userRepository.findOne({
+      where: { email: userDto.email }
+    });
+
+    if (existingUser) {
+      throw new ConflictException("E-mail já cadastrado");
+    }
+
+    const hashedPassword = await this.hashPassword(userDto.password);
+
+    const createdUser = this.userRepository.create({
+      ...userDto,
+      password: hashedPassword
+    });
+
+    return await this.userRepository.save(createdUser);
+  }
+
+  async findAll(): Promise<User[]> {
+    const users = await this.userRepository.find();
     return users;
   }
 
-  async createUser(user: UserDomain): Promise<UserDomain> {
-    const createdUser = await this.usersRepository.save(user);
-    return createdUser;
+  async findById(id: string): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id } });
+
+    if (!user) {
+      throw new NotFoundException("Usuário não encontrado");
+    }
+
+    return user;
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new NotFoundException("Usuário não encontrado");
+    }
+
+    return user;
+  }
+
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.findById(id);
+    Object.assign(user, updateUserDto);
+
+    return await this.userRepository.save(user);
+  }
+
+  async remove(id: string): Promise<{ message: string }> {
+    const user = await this.findById(id);
+
+    if (!user) {
+      throw new NotFoundException("Usuário não encontrado");
+    }
+    await this.userRepository.remove(user);
+
+    return {
+      message: "Usuário removido com sucesso"
+    };
   }
 }

@@ -1,4 +1,6 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
+
+import { Category } from "../category.enum";
 
 export class CreateRestaurantDto {
   @IsString({ message: "Name should be a string" })
@@ -6,6 +8,7 @@ export class CreateRestaurantDto {
   readonly name: string;
 
   @IsString({ message: "Description should be a string" })
+  @IsOptional()
   readonly description: string;
 
   @IsString({ message: "opening_hours" })
@@ -27,8 +30,9 @@ export class CreateRestaurantDto {
   readonly logo_url: string;
 
   @IsString({ message: "phone" })
+  @IsOptional()
   readonly phone: string;
 
-  @IsString({ message: "category" })
-  readonly category: string; //ENUM
+  @IsEnum(Category)
+  readonly category: Category;
 }

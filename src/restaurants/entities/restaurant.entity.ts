@@ -38,7 +38,7 @@ export class Restaurant {
   phone: string;
 
   @Column({ name: "category", type: "enum", enum: Category, nullable: true })
-  category: string; //ENUM
+  category: string;
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: string;

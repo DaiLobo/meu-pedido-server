@@ -13,7 +13,7 @@ export class Restaurant {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ name: "name" })
+  @Column({ name: "name", unique: true })
   name: string;
 
   @Column({ name: "description", nullable: true })

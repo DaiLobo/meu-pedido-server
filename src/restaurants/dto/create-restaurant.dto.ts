@@ -33,6 +33,9 @@ export class CreateRestaurantDto {
   @IsOptional()
   readonly phone: string;
 
-  @IsEnum(Category)
+  @IsEnum(Category, {
+    message:
+      "Categoria inválida. Escolha uma das seguintes categorias: Italiana, Japonesa, Chinesa, Brasileira, Mexicana, Árabe, Vegetariana/Vegana, Fast Food, Café/Bistrô, Churrascaria, Hamburgueria, Pizzaria, Padaria, Sorveteria, Docerias/Confeitarias, Restaurantes"
+  })
   readonly category: Category;
 }

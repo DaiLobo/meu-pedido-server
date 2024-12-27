@@ -1,6 +1,10 @@
 import { Repository } from "typeorm";
 
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { CreateRestaurantDto } from "./dto/create-restaurant.dto";
@@ -15,6 +19,14 @@ export class RestaurantsService {
   ) {}
 
   async create(createRestaurantDto: CreateRestaurantDto): Promise<Restaurant> {
+    const existingRestaurant = await this.restaurantRepository.findOneBy({
+      name: createRestaurantDto.name
+    });
+
+    if (existingRestaurant) {
+      throw new ConflictException("Restaurante já existe");
+    }
+
     const restaurant = this.restaurantRepository.create(createRestaurantDto);
     return await this.restaurantRepository.save(restaurant);
   }
@@ -39,6 +51,14 @@ export class RestaurantsService {
     id: string,
     updateRestaurantDto: UpdateRestaurantDto
   ): Promise<Restaurant> {
+    const existingRestaurant = await this.restaurantRepository.findOneBy({
+      name: updateRestaurantDto.name
+    });
+
+    if (existingRestaurant) {
+      throw new ConflictException("Restaurante já existe");
+    }
+
     const restaurant = await this.findOne(id);
     Object.assign(restaurant, updateRestaurantDto); // Atualiza os campos necessários
 

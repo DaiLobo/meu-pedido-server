@@ -49,7 +49,12 @@ export class UsersService {
       password: hashedPassword
     });
 
-    return await this.userRepository.save(createdUser);
+    await this.userRepository.save(createdUser);
+
+    return {
+      ...createdUser,
+      password: null
+    };
   }
 
   async findAll(): Promise<User[]> {

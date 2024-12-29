@@ -1,4 +1,5 @@
 import { Response } from "express";
+import { IsPublic } from "src/auth/decorators/is-public.decorator";
 
 import {
   Body,
@@ -16,10 +17,10 @@ import {
   Res
 } from "@nestjs/common";
 
-import { UpdateUserDto } from "./dto/update-users.dto.js";
-import { UserDomain } from "./user.domain.js";
+import { UpdateUserDto } from "./dto/update-users.dto";
+import { UserDomain } from "./user.domain";
+import { User } from "./user.entity";
 import { UserService } from "./users.service";
-import { User } from "./user.entity.js";
 
 @Controller("users") // Gerencia as rotas HTTP e manipula solicitações e respostas
 export class UsersController {
@@ -69,6 +70,12 @@ export class UsersController {
     return this.userService.findByEmail(email);
   }
 
+  // @Get("me")
+  // getMe(@CurrentUser() user: User) {
+  //   return user;
+  // }
+
+  @IsPublic()
   @Post()
   async createUser(@Res() response: Response, @Body() user: UserDomain) {
     try {

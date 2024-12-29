@@ -13,7 +13,7 @@ import { UserDomain } from "./user.domain.js";
 import { User } from "./user.entity";
 
 @Injectable() // Provedor de dependências. Permite que seja injetada em outras partes do sistema como controladores.
-export class UsersService {
+export class UserService {
   // Lógica de negócio da aplicação. Chamado pelos controladores. Integra com bd atraves do repositório.
   constructor(
     @InjectRepository(User)
@@ -84,6 +84,8 @@ export class UsersService {
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findById(id);
     Object.assign(user, updateUserDto);
+    //Verificar email
+    //validação das informações que vem. colocar midleware de validação de entrada para verificar as info e sanitização
 
     return await this.userRepository.save(user);
   }

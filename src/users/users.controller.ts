@@ -18,12 +18,12 @@ import {
 
 import { UpdateUserDto } from "./dto/update-users.dto.js";
 import { UserDomain } from "./user.domain.js";
-import { UsersService } from "./users.service";
+import { UserService } from "./users.service";
 import { User } from "./user.entity.js";
 
 @Controller("users") // Gerencia as rotas HTTP e manipula solicitações e respostas
 export class UsersController {
-  constructor(private readonly userService: UsersService) {} // Injeta o serviço
+  constructor(private readonly userService: UserService) {} // Injeta o serviço
 
   @Get()
   async findAllUsers(@Res() response: Response) {
@@ -69,7 +69,7 @@ export class UsersController {
     return this.userService.findByEmail(email);
   }
 
-  @Post("register")
+  @Post()
   async createUser(@Res() response: Response, @Body() user: UserDomain) {
     try {
       const userCreated = await this.userService.createUser(user);

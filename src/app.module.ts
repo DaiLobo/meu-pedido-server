@@ -2,8 +2,9 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
+import { AuthModule } from "./auth/auth.module";
 import { RestaurantsModule } from "./restaurants/restaurants.module";
-import { UsersModule } from "./users/users.module";
+import { UserModule } from "./users/users.module";
 
 @Module({
   imports: [
@@ -16,13 +17,14 @@ import { UsersModule } from "./users/users.module";
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      autoLoadEntities: true, //carrega automaticamente todas as entidades registradas no projeto
+      autoLoadEntities: true, // carrega automaticamente todas as entidades registradas no projeto
       synchronize: true, // sincroniza as entedidades com bd. usar apenas em ambiente de desenvolvimento
       logging: true, // habilita os logs SQL
       entities: [__dirname + "/**/*.entity{.js,.ts}"]
     }),
-    UsersModule,
-    RestaurantsModule
+    UserModule,
+    RestaurantsModule,
+    AuthModule
   ],
   controllers: [], // são responsáveis por gerenciar as rotas HTTP
   providers: []

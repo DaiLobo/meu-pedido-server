@@ -1,8 +1,10 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { APP_GUARD } from "@nestjs/core";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { AuthModule } from "./auth/auth.module";
+import { JwtAuthGuard } from "./auth/guards/jwt-auth.guard";
 import { RestaurantsModule } from "./restaurants/restaurants.module";
 import { UserModule } from "./users/users.module";
 
@@ -27,6 +29,11 @@ import { UserModule } from "./users/users.module";
     AuthModule
   ],
   controllers: [], // são responsáveis por gerenciar as rotas HTTP
-  providers: []
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard
+    }
+  ]
 })
 export class AppModule {} // primeira classe carregada ao iniciar a aplicação

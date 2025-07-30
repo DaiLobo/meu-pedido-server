@@ -108,6 +108,16 @@ export class UsersController {
     @Res() response: Response
   ) {
     try {
+      if (
+        updateUserDto.hasOwnProperty("id") ||
+        updateUserDto.hasOwnProperty("email") ||
+        updateUserDto.hasOwnProperty("password")
+      ) {
+        throw new ConflictException(
+          "Não é permitido atualizar os campos 'id', 'email' ou 'password'"
+        );
+      }
+
       const updateUser = await this.userService.update(id, updateUserDto);
 
       if (!updateUser) {
@@ -125,7 +135,7 @@ export class UsersController {
           : HttpStatus.INTERNAL_SERVER_ERROR;
 
       return response.status(status).json({
-        message: error.message || "Erro ao atualizar o usuário",
+        message: "Erro ao atualizar o usuário",
         error: error.message
       });
     }

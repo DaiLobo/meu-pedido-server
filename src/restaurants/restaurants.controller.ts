@@ -1,4 +1,5 @@
 import { Response } from "express";
+import { IsPublic } from "src/auth/decorators/is-public.decorator";
 
 import {
   Body,
@@ -48,6 +49,7 @@ export class RestaurantsController {
   }
 
   @Get()
+  @IsPublic()
   async findAll(@Res() res: Response) {
     try {
       const restaurants = await this.restaurantsService.findAll();
@@ -65,6 +67,7 @@ export class RestaurantsController {
   }
 
   @Get(":id")
+  @IsPublic()
   async findOne(@Param("id") id: string, @Res() res: Response) {
     try {
       const restaurant = await this.restaurantsService.findOne(id); // +id - converte id para número
@@ -88,6 +91,7 @@ export class RestaurantsController {
     @Body() updateRestaurantDto: UpdateRestaurantDto,
     @Res() res: Response
   ) {
+    //TODO: Conferir se é o dono do restaurante querendo atualizar
     try {
       const updated = await this.restaurantsService.update(
         id,
@@ -112,6 +116,7 @@ export class RestaurantsController {
 
   @Delete(":id")
   async remove(@Param("id") id: string, @Res() res: Response) {
+    //TODO: Conferir se é o dono do restaurante querendo atualizar
     try {
       await this.restaurantsService.remove(id);
 

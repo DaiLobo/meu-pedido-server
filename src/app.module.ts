@@ -5,6 +5,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { AuthModule } from "./auth/auth.module";
 import { JwtAuthGuard } from "./auth/guards/jwt-auth.guard";
+import { MenuItemsModule } from "./menu-items/menu-items.module";
 import { RestaurantsModule } from "./restaurants/restaurants.module";
 import { UserModule } from "./users/users.module";
 
@@ -26,7 +27,8 @@ import { UserModule } from "./users/users.module";
     }),
     UserModule,
     RestaurantsModule,
-    AuthModule
+    AuthModule,
+    MenuItemsModule
   ],
   controllers: [], // são responsáveis por gerenciar as rotas HTTP
   providers: [

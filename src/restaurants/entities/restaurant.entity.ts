@@ -1,7 +1,9 @@
+import { MenuItem } from "src/menu-items/menu-item.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
@@ -12,6 +14,9 @@ import { Category } from "../category.enum";
 export class Restaurant {
   @PrimaryGeneratedColumn("uuid")
   id: string;
+
+  @OneToMany(() => MenuItem, (menuItem) => menuItem.restaurantId)
+  menuItems: MenuItem[];
 
   @Column({ name: "name", unique: true })
   name: string;
@@ -38,7 +43,7 @@ export class Restaurant {
   phone: string;
 
   @Column({ name: "category", type: "enum", enum: Category, nullable: true })
-  category: string;
+  category: Category;
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: string;

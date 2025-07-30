@@ -84,8 +84,6 @@ export class UserService {
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findById(id);
     Object.assign(user, updateUserDto);
-    //Verificar email
-    //validação das informações que vem. colocar midleware de validação de entrada para verificar as info e sanitização
 
     return await this.userRepository.save(user);
   }

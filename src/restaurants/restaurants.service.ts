@@ -45,7 +45,8 @@ export class RestaurantsService {
 
   async findOne(id: string): Promise<Restaurant> {
     const restaurant = await this.restaurantRepository.findOne({
-      where: { id } //testar id como null
+      where: { id },
+      relations: ["menuItems"]
     });
 
     if (!restaurant) {

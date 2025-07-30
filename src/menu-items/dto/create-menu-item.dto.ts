@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsUUID } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString, IsUUID } from "class-validator";
 
 export class CreateMenuItemDto {
   @IsNotEmpty()
@@ -9,7 +9,7 @@ export class CreateMenuItemDto {
   readonly description: string;
 
   @IsNotEmpty()
-  @IsString({ message: "Price should be a number" })
+  @IsNumber()
   readonly price: number;
 
   @IsString({ message: "Image URL should be a string" })
@@ -18,10 +18,4 @@ export class CreateMenuItemDto {
   @IsNotEmpty()
   @IsUUID()
   readonly restaurantId: string;
-
-  @IsString({ message: "Created At should be a string" })
-  readonly createdAt: string;
-
-  @IsString({ message: "Updated At should be a string" })
-  readonly updatedAt: string;
 }

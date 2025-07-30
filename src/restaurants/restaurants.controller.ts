@@ -12,6 +12,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Res
 } from "@nestjs/common";
 
@@ -50,13 +51,19 @@ export class RestaurantsController {
 
   @Get()
   @IsPublic()
-  async findAll(@Res() res: Response) {
+  async findAll(
+    @Query("page") page: number = 1,
+    @Query("limit") limit: number = 10,
+    @Res() res: Response
+  ) {
     try {
-      const restaurants = await this.restaurantsService.findAll();
+      const restaurants = await this.restaurantsService.findAll(
+        Number(page),
+        Number(limit)
+      );
 
       return res.status(HttpStatus.OK).json({
-        message: "Lista de restaurantes",
-        data: restaurants
+        restaurants
       });
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({

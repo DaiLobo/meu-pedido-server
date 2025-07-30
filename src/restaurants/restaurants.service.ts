@@ -31,13 +31,21 @@ export class RestaurantsService {
     return await this.restaurantRepository.save(restaurant);
   }
 
-  async findAll(): Promise<Restaurant[]> {
-    return await this.restaurantRepository.find();
+  async findAll(
+    page: number = 1,
+    limit: number = 10
+  ): Promise<{ data: Restaurant[]; totalPages: number }> {
+    const [restaurants, total] = await this.restaurantRepository.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit
+    });
+    const totalPages = Math.ceil(total / limit);
+    return { data: restaurants, totalPages };
   }
 
   async findOne(id: string): Promise<Restaurant> {
     const restaurant = await this.restaurantRepository.findOne({
-      where: { id }
+      where: { id } //testar id como null
     });
 
     if (!restaurant) {

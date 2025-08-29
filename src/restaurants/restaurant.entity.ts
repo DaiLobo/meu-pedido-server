@@ -3,12 +3,15 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
 
-import { Category } from "../category.enum";
+import { Category } from "./category.enum";
+import { User } from "src/users/user.entity";
 
 @Entity({ name: "restaurants" })
 export class Restaurant {
@@ -20,6 +23,9 @@ export class Restaurant {
 
   @Column({ name: "name", unique: true })
   name: string;
+
+  @Column({ name: "cnpj", unique: true })
+  cnpj: string;
 
   @Column({ name: "description", nullable: true })
   description: string;
@@ -44,6 +50,15 @@ export class Restaurant {
 
   @Column({ name: "category", type: "enum", enum: Category, nullable: true })
   category: Category;
+
+  @ManyToOne(() => User, (user) => user.restaurants, {
+    onDelete: "CASCADE"
+  })
+  @JoinColumn({ name: "user_id" })
+  user: User;
+
+  @Column({ name: "user_id", nullable: true })
+  userId: string;
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: string;

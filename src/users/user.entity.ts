@@ -1,7 +1,9 @@
+import { Restaurant } from "src/restaurants/restaurant.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
@@ -31,6 +33,9 @@ export class User {
 
   @Column({ name: "phone", nullable: true })
   phone: string;
+
+  @OneToMany(() => Restaurant, (restaurant) => restaurant.userId)
+  restaurants: Restaurant[];
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: string;

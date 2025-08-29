@@ -1,5 +1,8 @@
 import { Response } from "express";
+import { CurrentUser } from "src/auth/decorators/current-user.decorator";
 import { IsPublic } from "src/auth/decorators/is-public.decorator";
+import { MenuItemsCacheService } from "src/menu-items/menu-items-cache.service";
+import { User } from "src/users/user.entity";
 
 import {
   Body,
@@ -22,7 +25,10 @@ import { MenuItemsService } from "./menu-items.service";
 
 @Controller("menu-items")
 export class MenuItemsController {
-  constructor(private readonly menuItemsService: MenuItemsService) {}
+  constructor(
+    private readonly menuItemsService: MenuItemsService,
+    private readonly menuItemsCacheService: MenuItemsCacheService
+  ) {}
 
   @Post()
   async create(
@@ -73,11 +79,22 @@ export class MenuItemsController {
     }
   }
 
+  //TODO: TEM QUE LEMBRAR QUE AS VEZES PODE NAO TER NADA SALVO NO REDIS E TERIA QUE PEGAR DO BD
+  @Get("popular")
+  @IsPublic()
+  async getPopular(@Res() res: Response) {
+    const items = await this.menuItemsCacheService.getPopularMenuItems();
+    return res.status(HttpStatus.OK).json({
+      message: "Itens de cardápio populares recuperados com sucesso.",
+      data: items || []
+    });
+  }
+
   @Get(":id")
   @IsPublic()
   async findOne(@Param("id") id: string, @Res() res: Response) {
     try {
-      const item = this.menuItemsService.findOne(id);
+      const item = await this.menuItemsService.findOne(id);
 
       return res.status(HttpStatus.OK).json({
         message: "Item do cardápio encontrado com sucesso.",
@@ -101,10 +118,15 @@ export class MenuItemsController {
   async update(
     @Param("id") id: string,
     @Body() updateMenuItemDto: UpdateMenuItemDto,
+    @CurrentUser() user: User,
     @Res() res: Response
   ) {
     try {
-      const updated = await this.menuItemsService.update(id, updateMenuItemDto);
+      const updated = await this.menuItemsService.update(
+        id,
+        user,
+        updateMenuItemDto
+      );
 
       return res.status(HttpStatus.OK).json({
         message: "Item do cardápio atualizado com sucesso.",
@@ -123,9 +145,13 @@ export class MenuItemsController {
   }
 
   @Delete(":id")
-  async remove(@Param("id") id: string, @Res() res: Response) {
+  async remove(
+    @Param("id") id: string,
+    @CurrentUser() user: User,
+    @Res() res: Response
+  ) {
     try {
-      await this.menuItemsService.remove(id);
+      await this.menuItemsService.remove(id, user);
 
       return res.status(HttpStatus.NO_CONTENT).json({
         message: "Item do cardápio removido com sucesso."

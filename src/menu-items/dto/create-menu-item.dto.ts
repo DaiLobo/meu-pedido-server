@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsNumber, IsString, IsUUID } from "class-validator";
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  IsUUID
+} from "class-validator";
+import { Category } from "../category.enum";
 
 export class CreateMenuItemDto {
   @IsNotEmpty()
@@ -12,6 +19,10 @@ export class CreateMenuItemDto {
   @IsNumber()
   readonly price: number;
 
+  @IsEnum(Category, {
+    message:
+      "Categoria inválida. Escolha uma das seguintes categorias: Comida, Bebida, Outro"
+  })
   @IsString({ message: "Image URL should be a string" })
   readonly imgUrl: string;
 

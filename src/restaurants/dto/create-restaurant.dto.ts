@@ -7,6 +7,10 @@ export class CreateRestaurantDto {
   @IsNotEmpty()
   readonly name: string;
 
+  @IsString({ message: "CNPJ should be a string" })
+  @IsNotEmpty()
+  readonly cnpj: string;
+
   @IsString({ message: "Description should be a string" })
   @IsOptional()
   readonly description: string;
@@ -38,4 +42,8 @@ export class CreateRestaurantDto {
       "Categoria inválida. Escolha uma das seguintes categorias: Italiana, Japonesa, Chinesa, Brasileira, Mexicana, Árabe, Vegetariana/Vegana, Fast Food, Café/Bistrô, Churrascaria, Hamburgueria, Pizzaria, Padaria, Sorveteria, Docerias/Confeitarias, Restaurantes"
   })
   readonly category: Category;
+
+  @IsString({ message: "userId should be a string" })
+  @IsOptional()
+  readonly userId?: string;
 }

@@ -1,5 +1,6 @@
 import {
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -11,6 +12,8 @@ import { AuthService } from "./auth.service";
 import { IsPublic } from "./decorators/is-public.decorator";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { AuthRequest } from "./models/AuthRequest";
+import { CurrentUser } from "./decorators/current-user.decorator";
+import { User } from "src/users/user.entity";
 
 @Controller()
 export class AuthController {
@@ -22,5 +25,10 @@ export class AuthController {
   @IsPublic()
   login(@Request() req: AuthRequest) {
     return this.authService.login(req.user);
+  }
+
+  @Get("profile")
+  getProfile(@CurrentUser() user: User) {
+    return user;
   }
 }

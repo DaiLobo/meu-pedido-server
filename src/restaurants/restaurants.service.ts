@@ -9,7 +9,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 
 import { CreateRestaurantDto } from "./dto/create-restaurant.dto";
 import { UpdateRestaurantDto } from "./dto/update-restaurant.dto";
-import { Restaurant } from "./entities/restaurant.entity";
+import { Restaurant } from "./restaurant.entity";
 
 @Injectable()
 export class RestaurantsService {

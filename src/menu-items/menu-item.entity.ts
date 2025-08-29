@@ -1,4 +1,4 @@
-import { Restaurant } from "src/restaurants/entities/restaurant.entity";
+import { Restaurant } from "src/restaurants/restaurant.entity";
 import {
   Column,
   CreateDateColumn,
@@ -7,6 +7,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
+
+import { Category } from "./category.enum";
 
 @Entity({ name: "menu_items" })
 export class MenuItem {
@@ -22,6 +24,9 @@ export class MenuItem {
   @Column({ name: "price", type: "decimal", precision: 10, scale: 2 })
   price: number;
 
+  @Column({ name: "category", type: "enum", enum: Category, nullable: true })
+  category: Category;
+
   @Column({ name: "img_url", nullable: true })
   imgUrl: string;
 
@@ -30,6 +35,9 @@ export class MenuItem {
     onDelete: "CASCADE"
   })
   restaurantId: string;
+
+  @Column({ name: "access_count", type: "int", default: 0 })
+  accessCount: number;
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: string;

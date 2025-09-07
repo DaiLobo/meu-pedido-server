@@ -6,6 +6,8 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "./auth/auth.module";
 import { JwtAuthGuard } from "./auth/guards/jwt-auth.guard";
 import { MenuItemsModule } from "./menu-items/menu-items.module";
+import { OrderItemsModule } from "./order_items/order_items.module";
+import { OrderModule } from "./orders/orders.module";
 import { RestaurantsModule } from "./restaurants/restaurants.module";
 import { UserModule } from "./users/users.module";
 
@@ -22,13 +24,15 @@ import { UserModule } from "./users/users.module";
       database: process.env.DB_DATABASE,
       autoLoadEntities: true, // carrega automaticamente todas as entidades registradas no projeto
       synchronize: true, // sincroniza as entedidades com bd. usar apenas em ambiente de desenvolvimento
-      logging: true, // habilita os logs SQL
+      logging: false, // habilita os logs SQL
       entities: [__dirname + "/**/*.entity{.js,.ts}"]
     }),
+    AuthModule,
     UserModule,
     RestaurantsModule,
-    AuthModule,
-    MenuItemsModule
+    MenuItemsModule,
+    OrderModule,
+    OrderItemsModule
   ],
   controllers: [], // são responsáveis por gerenciar as rotas HTTP
   providers: [

@@ -34,7 +34,7 @@ export class User {
   @Column({ name: "phone", nullable: true })
   phone: string;
 
-  @OneToMany(() => Restaurant, (restaurant) => restaurant.userId)
+  @OneToMany(() => Restaurant, (restaurant) => restaurant.user)
   restaurants: Restaurant[];
 
   @CreateDateColumn({ name: "created_at" })

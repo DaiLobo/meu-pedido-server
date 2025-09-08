@@ -1,17 +1,20 @@
+import { CurrentUser } from "src/auth/decorators/current-user.decorator";
+import { User } from "src/users/user.entity";
+
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
+  Controller,
+  Delete,
+  Get,
   Param,
-  Delete
+  Patch,
+  Post
 } from "@nestjs/common";
-import { OrderService } from "./orders.service";
+
 import { CreateOrderDto } from "./dto/create-orders.dto";
 import { UpdateOrderDto } from "./dto/update-orders.dto";
-import { User } from "src/users/user.entity";
-import { CurrentUser } from "src/auth/decorators/current-user.decorator";
+import { OrderService } from "./orders.service";
+import { Status } from "./status.enum";
 
 @Controller("orders")
 export class OrderController {
@@ -47,9 +50,42 @@ export class OrderController {
     return await this.orderService.findAll(user.id);
   }
 
+  //Pegar STATUS do pedido
+  @Get(":id/status")
+  async findOrderStatus(@Param("id") id: string) {
+    const status = await this.orderService.findOrderStatus(id);
+
+    return {
+      status
+    };
+  }
+
   @Get(":id")
   async findOne(@Param("id") id: string) {
     return await this.orderService.findOne(id);
+  }
+
+  @Patch(":id/status")
+  async updateStatus(
+    @Param("id") id: string,
+    @CurrentUser() user: User,
+    @Body() data: { status: Status }
+  ) {
+    try {
+      const restaurantsId = user.restaurants.map((restaurant) => restaurant.id);
+      if (!restaurantsId || restaurantsId.length === 0) {
+        throw new Error("Usuário não está associado a nenhum restaurante.");
+      }
+
+      await this.orderService.updateOrderStatus(id, data.status, restaurantsId);
+      return {
+        message: "Status do pedido atualizado com sucesso."
+      };
+    } catch (error) {
+      return {
+        error: error.message
+      };
+    }
   }
 
   @Patch(":id")

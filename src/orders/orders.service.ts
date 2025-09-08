@@ -1,13 +1,14 @@
 import { MenuItem } from "src/menu-items/menu-item.entity";
 import { OrderItem } from "src/order_items/order_item.entity";
-import { Repository } from "typeorm";
+import { Repository, In } from "typeorm";
 
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { CreateOrderDto } from "./dto/create-orders.dto";
 import { UpdateOrderDto } from "./dto/update-orders.dto";
 import { Order } from "./orders.entity";
+import { Status } from "./status.enum";
 
 @Injectable()
 export class OrderService {
@@ -27,8 +28,7 @@ export class OrderService {
       const order = this.orderRepository.create({
         userId: createOrderDto.userId,
         restaurantId: createOrderDto.restaurantId,
-        totalPrice: 0, // Será atualizado depois
-        status: "pending"
+        totalPrice: 0 // Será atualizado depois
       });
 
       await this.orderRepository.save(order);
@@ -77,8 +77,44 @@ export class OrderService {
     });
   }
 
+  async findOrderStatus(id: string): Promise<string> {
+    const order = await this.orderRepository.findOne({
+      where: { id },
+      select: ["status"]
+    });
+
+    if (!order) {
+      throw new NotFoundException("Pedido não encontrado");
+    }
+    return order.status;
+  }
+
   async update(id: string, updateOrderDto: UpdateOrderDto) {
     return `This action updates a #${id} order`;
+  }
+
+  async updateOrderStatus(id: string, status: Status, restaurantIds: string[]) {
+    try {
+      const order = await this.orderRepository.findOneBy({
+        id,
+        restaurantId: In(restaurantIds)
+      });
+
+      if (!order) {
+        throw new NotFoundException("Pedido não encontrado");
+      }
+      const result = await this.orderRepository.update(id, { status });
+      if (result.affected === 0) {
+        throw new NotFoundException(
+          "Pedido não encontrado ou status não alterado"
+        );
+      }
+    } catch (error) {
+      throw {
+        error,
+        message: "Houve um erro ao atualizar o status do pedido."
+      };
+    }
   }
 
   async remove(id: string) {

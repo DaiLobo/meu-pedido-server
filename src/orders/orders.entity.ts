@@ -9,6 +9,8 @@ import {
   PrimaryGeneratedColumn
 } from "typeorm";
 
+import { Status } from "./status.enum";
+
 @Entity({ name: "orders" })
 export class Order {
   @PrimaryGeneratedColumn("uuid")
@@ -26,8 +28,14 @@ export class Order {
   @Column({ name: "total_price", type: "decimal" })
   totalPrice: number;
 
-  @Column({ name: "status", default: "pending" })
-  status: string;
+  @Column({
+    name: "status",
+    type: "enum",
+    enum: Status,
+    nullable: true,
+    default: "PENDING"
+  })
+  status: Status;
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
   orderItems: OrderItem[];

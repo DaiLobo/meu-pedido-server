@@ -15,11 +15,19 @@ export class AuthService {
   ) {} // sempre que precisar de serviço, abre no construtor e pede via injeção de dependencia do nestjs.
 
   login(user: User): UserToken {
+    const restaurants = user.restaurants
+      ? user.restaurants.map((restaurant) => ({
+          id: restaurant.id,
+          name: restaurant.name
+        }))
+      : [];
+
     // transformar o user em JWT
     const payload: UserPayload = {
       sub: user.id,
       email: user.email,
-      name: user.name
+      name: user.name,
+      restaurants
     };
 
     const jwtToken = this.jwtService.sign(payload);

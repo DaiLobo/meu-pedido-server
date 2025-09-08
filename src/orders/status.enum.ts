@@ -1,7 +1,7 @@
 export enum Status {
-  PENDING = "Pendente",
-  PREPARING = "Preparando pedido",
-  OUT_FOR_DELIVERY = "Saiu para entrega",
-  COMPLETED = "Completado",
-  CANCELLED = "Cancelado"
+  PENDING = "PENDING",
+  PREPARING = "PREPARING",
+  OUT_FOR_DELIVERY = "OUT_FOR_DELIVERY",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED"
 }
